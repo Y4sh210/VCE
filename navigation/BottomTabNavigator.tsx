@@ -4,11 +4,11 @@ import * as React from 'react';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import HomeScreen from '../screens/HomeScreen';
-import MarketScreen from '../screens/MarketScreen';
-import PortfolioScreen from '../screens/PortfolioScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import RankingScreen from '../screens/RankingScreen';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import MarketScreen from '../screens/MarketScreen/MarketScreen';
+import PortfolioScreen from '../screens/PortfolioScreen/PortfolioScreen';
+import ProfileScreen from '../screens/ProfileScreen/profileScreen';
+import RankingScreen from '../screens/RankingScreen/RankingScreen';
 import TabOneScreen from '../screens/TabOneScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { BottomTabParamList } from '../types';
