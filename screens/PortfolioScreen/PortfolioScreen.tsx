@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         marginVertical: 20
     },
     image: {
-        height: 170,
+        height: 160,
         resizeMode: "contain",
     },
     label: {
