@@ -29,6 +29,46 @@ const portfolioCoins = [{
     symbol: 'ETH',
     amount: 30,
     valueUSD: 30.120
+},
+{
+    id: '4',
+    name: 'Ether',
+    image: 'abc',
+    symbol: 'ETH',
+    amount: 30,
+    valueUSD: 30.120
+},
+{
+    id: '5',
+    name: 'Ether',
+    image: 'abc',
+    symbol: 'ETH',
+    amount: 30,
+    valueUSD: 30.120
+},
+{
+    id: '6',
+    name: 'Ether',
+    image: 'abc',
+    symbol: 'ETH',
+    amount: 30,
+    valueUSD: 30.120
+},
+{
+    id: '7',
+    name: 'Ether',
+    image: 'abc',
+    symbol: 'ETH',
+    amount: 30,
+    valueUSD: 30.120
+},
+{
+    id: '8',
+    name: 'Ether',
+    image: 'abc',
+    symbol: 'ETH',
+    amount: 30,
+    valueUSD: 30.120
 }]
 // create a component
 const PortfolioScreen = () => {
@@ -49,6 +89,7 @@ const PortfolioScreen = () => {
                 renderItem={({ item }) =>
                     <PortfolioCoin portfolioCoin={item} />
                 }
+                showsVerticalScrollIndicator={false}
             />
 
         </View>

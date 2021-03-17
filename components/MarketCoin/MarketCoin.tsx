@@ -3,23 +3,23 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 
 export interface portfolioCoinProps {
-    portfolioCoin: {
+    marketCoin: {
         image: string,
         name: string,
         symbol: string,
-        amount: number,
+        valueChange24H: number,
         valueUSD: number,
     }
 }
 
 // create a component
-const PortfolioCoin = (props: portfolioCoinProps) => {
+const MarketCoin = (props: portfolioCoinProps) => {
     const {
-        portfolioCoin: {
+        marketCoin: {
             image,
             name,
             symbol,
-            amount,
+            valueChange24H,
             valueUSD,
         },
     } = props;
@@ -34,7 +34,9 @@ const PortfolioCoin = (props: portfolioCoinProps) => {
             </View>
             <View style={styles.right}>
                 <Text style={styles.value}>${valueUSD}</Text>
-                <Text style={styles.symbol}>{symbol} {amount}</Text>
+                <Text style={{ color: valueChange24H > 0 ? '#4bdb00' : '#f10000' }}>
+                    {valueChange24H > 0 && '+'} {valueChange24H}
+                </Text>
             </View>
         </View>
     );
@@ -81,4 +83,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default PortfolioCoin;
+export default MarketCoin;
