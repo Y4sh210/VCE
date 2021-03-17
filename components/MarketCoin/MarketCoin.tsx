@@ -1,6 +1,8 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import PercentageChange from '../PercentageChange';
+import { useNavigation } from '@react-navigation/native';
 
 export interface portfolioCoinProps {
     marketCoin: {
@@ -23,8 +25,11 @@ const MarketCoin = (props: portfolioCoinProps) => {
             valueUSD,
         },
     } = props;
+
+    const navigation = useNavigation();
+
     return (
-        <View style={styles.container}>
+        <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails')}>
             <View style={styles.left}>
                 <Image style={styles.image} source={require('../../assets/images/btc.png')} />
                 <View>
@@ -34,11 +39,9 @@ const MarketCoin = (props: portfolioCoinProps) => {
             </View>
             <View style={styles.right}>
                 <Text style={styles.value}>${valueUSD}</Text>
-                <Text style={{ color: valueChange24H > 0 ? '#4bdb00' : '#f10000' }}>
-                    {valueChange24H > 0 && '+'} {valueChange24H}
-                </Text>
+                <PercentageChange value={valueChange24H} />
             </View>
-        </View>
+        </Pressable >
     );
 };
 

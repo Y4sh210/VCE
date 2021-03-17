@@ -1,6 +1,7 @@
 //import liraries
+import { useNavigation } from '@react-navigation/native';
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 
 export interface portfolioCoinProps {
     portfolioCoin: {
@@ -23,8 +24,10 @@ const PortfolioCoin = (props: portfolioCoinProps) => {
             valueUSD,
         },
     } = props;
+
+    const navigation = useNavigation();
     return (
-        <View style={styles.container}>
+        <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails')}>
             <View style={styles.left}>
                 <Image style={styles.image} source={require('../../assets/images/btc.png')} />
                 <View>
@@ -36,7 +39,7 @@ const PortfolioCoin = (props: portfolioCoinProps) => {
                 <Text style={styles.value}>${valueUSD}</Text>
                 <Text style={styles.symbol}>{symbol} {amount}</Text>
             </View>
-        </View>
+        </Pressable>
     );
 };
 
