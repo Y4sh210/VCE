@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { ColorSchemeName } from 'react-native';
 import CoinDetailsScreen from '../screens/CoinDetailsScreen/CoinDetailsScreen';
+import ExchangeScreen from '../screens/ExchangeScreen/ExchangeScreen';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
@@ -28,6 +29,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
+
     <Stack.Navigator>
       <Stack.Screen
         name="Root"
@@ -41,6 +43,13 @@ function RootNavigator() {
         component={CoinDetailsScreen}
         options={{
           title: "Price Data",
+        }}
+      />
+      <Stack.Screen
+        name="CoinExchange"
+        component={ExchangeScreen}
+        options={{
+          title: "Coin Exchange"
         }}
       />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />

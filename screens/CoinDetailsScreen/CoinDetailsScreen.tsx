@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Image, Pressable, ImageBackgroundBase } from 'r
 import { AntDesign } from "@expo/vector-icons";
 import PercentageChange from '../../components/PercentageChange';
 import CoinPriceGraph from '../../components/CoinPriceGraph';
+import { useNavigation } from '@react-navigation/core';
 
 
 const historyString = JSON.stringify([
@@ -175,7 +176,7 @@ const historyString = JSON.stringify([
     52141.260866132485,
     51586.017410455745,
     51950.89679140388
-  ])
+])
 
 
 // create a component
@@ -192,11 +193,14 @@ const CoinDetailsScreen = () => {
         amount: 2
     })
 
+    const navigation = useNavigation();
+
     const onBuy = () => {
+        navigation.navigate('CoinExchange', { isBuy: true, coinData });
     };
 
     const onSell = () => {
-
+        navigation.navigate('CoinExchange', { isBuy: false, coinData });
     };
 
     return (
@@ -236,7 +240,7 @@ const CoinDetailsScreen = () => {
                 </View>
             </View>
 
-            <CoinPriceGraph dataString ={historyString} />
+            <CoinPriceGraph dataString={historyString} />
 
 
 
