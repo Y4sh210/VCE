@@ -20,7 +20,7 @@
       "function": {
         "vce72d134dfPostConfirmation": {
           "deploymentBucketName": "amplify-vce-dev-130555-deployment",
-          "s3Key": "amplify-builds/vce72d134dfPostConfirmation-67796b75424b4e6a5362-build.zip"
+          "s3Key": "amplify-builds/vce72d134dfPostConfirmation-7a6c33366758774f397a-build.zip"
         }
       }
     }

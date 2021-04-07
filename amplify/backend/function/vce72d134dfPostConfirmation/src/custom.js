@@ -34,13 +34,34 @@ exports.handler = async (event, context) => {
     TableName: process.env.USERTABLE,
   }
 
-
   try {
     await ddb.putItem(params).promise();
     console.log("Success");
   } catch (e) {
     console.log("Error", e);
   }
+
+
+  const PortfolioCoinItem = {
+    'id': { S: `${event.request.userAttributes.sub}-usd` },
+    '__typename': { S: 'PortfolioCoin' },
+    'createdAt': { S: date.toISOString() },
+    'updatedAt': { S: date.toISOString() },
+    'userId': { S: event.request.userAttributes.sub },
+    'coinId': { S: process.env.USD_COIN_ID },
+    'amount': { N: "100000.0" }
+  }
+
+  try {
+    await ddb.putItem({
+      Item: PortfolioCoinItem,
+      TableName: process.env.PORTFOLIO_COIN_TABLE
+    }).promise();
+    console.log("Success");
+  } catch (e) {
+    console.log("Error", e);
+  }
+
 
   context.done(null, event);
 }
