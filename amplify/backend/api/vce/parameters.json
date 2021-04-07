@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "vce",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authvce72d134df",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

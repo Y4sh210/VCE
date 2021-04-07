@@ -1,6 +1,9 @@
 //import liraries
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { Auth, Hub } from 'aws-amplify';
+import { CommonActions, useNavigation } from '@react-navigation/core';
+import { parseSync } from '@babel/core';
 
 const image = require('../../assets/images/Saly-1.png');
 const googleButtonImg = require('../../assets/images/google-sign-in.png');
@@ -8,8 +11,43 @@ const googleButtonImg = require('../../assets/images/google-sign-in.png');
 // create a component
 const WelcomeScreen = () => {
 
-    const signInGoogle = () => {
+    const navigation = useNavigation();
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            const user = await Auth.currentAuthenticatedUser();
+            if (user) {
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [
+                            { name: 'Root' },
+                        ],
+                    })
+                );
+            }
+        }
+
+        fetchUser();
+    }, [])
+
+    useEffect(() => {
+        Hub.listen("auth", ({ payload: { event, data } }) => {
+            if (event === "signIn") {
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [
+                            { name: 'Root' },
+                        ],
+                    })
+                );
+            }
+        });
+    }, [])
+
+    const signInGoogle = async () => {
+        await Auth.federatedSignIn({ provider: "Google" });
     };
 
     return (

@@ -1,4 +1,7 @@
 //import liraries
+import Auth from '@aws-amplify/auth';
+import { useNavigation } from '@react-navigation/core';
+import { CommonActions } from '@react-navigation/native';
 import React, { Component, useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 
@@ -13,8 +16,18 @@ const ProfileScreen = () => {
         image: require('../../assets/images/btc.png'),
         netWorth: 1234
     });
-    const signout = () => {
-        console.warn("SIGN OUT");
+
+    const navigation = useNavigation();
+    const signout = async () => {
+        await Auth.signOut();
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    { name: 'Welcome' },
+                ],
+            })
+        );
     };
     return (
         <View style={styles.container}>

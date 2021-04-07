@@ -42,7 +42,7 @@ const portfolioCoins = [{
     name: 'Ether',
     image: 'abc',
     symbol: 'ETH',
-    valueChange24H: 30,
+    valueChange24H: -30,
     valueUSD: 30.120
 },
 {
@@ -50,7 +50,7 @@ const portfolioCoins = [{
     name: 'Ether',
     image: 'abc',
     symbol: 'ETH',
-    valueChange24H: 30,
+    valueChange24H: -30,
     valueUSD: 30.120
 },
 {

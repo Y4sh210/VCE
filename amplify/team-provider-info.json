@@ -1,0 +1,28 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-vce-dev-130555-authRole",
+      "UnauthRoleArn": "arn:aws:iam::106839666850:role/amplify-vce-dev-130555-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::106839666850:role/amplify-vce-dev-130555-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-vce-dev-130555-deployment",
+      "UnauthRoleName": "amplify-vce-dev-130555-unauthRole",
+      "StackName": "amplify-vce-dev-130555",
+      "StackId": "arn:aws:cloudformation:us-east-1:106839666850:stack/amplify-vce-dev-130555/e61dadb0-9773-11eb-b5fb-0e4c8b1e1e5f",
+      "AmplifyAppId": "d1nm09969qghqr"
+    },
+    "categories": {
+      "auth": {
+        "vce72d134df": {
+          "googleClientId": "75246927956-r3j785h0kmsgc99clu543kha8g1v8nmf.apps.googleusercontent.com"
+        }
+      },
+      "function": {
+        "vce72d134dfPostConfirmation": {
+          "deploymentBucketName": "amplify-vce-dev-130555-deployment",
+          "s3Key": "amplify-builds/vce72d134dfPostConfirmation-67796b75424b4e6a5362-build.zip"
+        }
+      }
+    }
+  }
+}
