@@ -1,76 +1,35 @@
 //import liraries
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
 import MarketCoin from '../../components/MarketCoin/MarketCoin';
+import { API, graphqlOperation } from 'aws-amplify';
+import { listCoins } from '../../src/graphql/queries';
 
 const image = require('../../assets/images/Saly-17.png');
 
-const portfolioCoins = [{
-    id: '1',
-    name: 'Virtual Dollars',
-    image: require('../../assets/images/btc.png'),
-    symbol: 'USD',
-    valueChange24H: 70.20,
-    valueUSD: 70.20
-},
-{
-    id: '2',
-    name: 'Bitcoin',
-    image: 'abc',
-    symbol: 'BTC',
-    valueChange24H: -1.21,
-    valueUSD: 69.420
-},
-{
-    id: '3',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    valueChange24H: 30,
-    valueUSD: 30.120
-},
-{
-    id: '4',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    valueChange24H: 30,
-    valueUSD: 30.120
-},
-{
-    id: '5',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    valueChange24H: -30,
-    valueUSD: 30.120
-},
-{
-    id: '6',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    valueChange24H: -30,
-    valueUSD: 30.120
-},
-{
-    id: '7',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    valueChange24H: 30,
-    valueUSD: 30.120
-},
-{
-    id: '8',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    valueChange24H: 30,
-    valueUSD: 30.120
-}]
+
 // create a component
 const MarketScreen = () => {
+
+    const [coins, setCoins] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const fetchCoins = async () => {
+        setLoading(true);
+        try {
+            const response = await API.graphql(graphqlOperation(listCoins));
+            setCoins(response.data.listCoins.items);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchCoins();
+    }, [])
+
     return (
         <View style={styles.container}>
             <Image
@@ -80,7 +39,9 @@ const MarketScreen = () => {
             <Text style={styles.label}>Market</Text>
             <FlatList
                 style={{ width: '100%' }}
-                data={portfolioCoins}
+                data={coins}
+                onRefresh={fetchCoins}
+                refreshing={loading}
                 renderItem={({ item }) =>
                     <MarketCoin marketCoin={item} />
                 }
