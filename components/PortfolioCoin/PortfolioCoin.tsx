@@ -5,12 +5,14 @@ import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 
 export interface portfolioCoinProps {
     portfolioCoin: {
-        id: string,
-        image: string,
-        name: string,
-        symbol: string,
         amount: number,
-        valueUSD: number,
+        coin: {
+            id: string,
+            image: string,
+            name: string,
+            symbol: string,
+            currentPrice: number
+        }
     }
 }
 
@@ -18,12 +20,14 @@ export interface portfolioCoinProps {
 const PortfolioCoin = (props: portfolioCoinProps) => {
     const {
         portfolioCoin: {
-            id,
-            image,
-            name,
-            symbol,
             amount,
-            valueUSD,
+            coin: {
+                id,
+                image,
+                name,
+                symbol,
+                currentPrice
+            }
         },
     } = props;
 
@@ -38,7 +42,7 @@ const PortfolioCoin = (props: portfolioCoinProps) => {
                 </View>
             </View>
             <View style={styles.right}>
-                <Text style={styles.value}>${valueUSD}</Text>
+                <Text style={styles.value}>${amount * currentPrice}</Text>
                 <Text style={styles.symbol}>{symbol} {amount}</Text>
             </View>
         </Pressable>

@@ -1,79 +1,44 @@
 //import liraries
-import React, { Component } from 'react';
+import React, { Component, useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
 import PortfolioCoin from '../../components/PortfolioCoin/PortfolioCoin';
 import ProfileScreen from '../ProfileScreen/profileScreen';
-import {API, graphqlOperation} from 'aws-amplify';
-import {} from '../../src/graphql/queries'
+import { API, graphqlOperation } from 'aws-amplify';
+import { getUserPortfolio } from './queries';
+import AppContext from '../../src/utils/AppContext';
 
 const image = require('../../assets/images/Saly-10.png');
 
-const portfolioCoins = [{
-    id: '1',
-    name: 'Virtual Dollars',
-    image: require('../../assets/images/btc.png'),
-    symbol: 'USD',
-    amount: 70.20,
-    valueUSD: 70.20
-},
-{
-    id: '2',
-    name: 'Bitcoin',
-    image: 'abc',
-    symbol: 'BTC',
-    amount: 1.21,
-    valueUSD: 69.420
-},
-{
-    id: '3',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    amount: 30,
-    valueUSD: 30.120
-},
-{
-    id: '4',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    amount: 30,
-    valueUSD: 30.120
-},
-{
-    id: '5',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    amount: 30,
-    valueUSD: 30.120
-},
-{
-    id: '6',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    amount: 30,
-    valueUSD: 30.120
-},
-{
-    id: '7',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    amount: 30,
-    valueUSD: 30.120
-},
-{
-    id: '8',
-    name: 'Ether',
-    image: 'abc',
-    symbol: 'ETH',
-    amount: 30,
-    valueUSD: 30.120
-}]
 // create a component
 const PortfolioScreen = () => {
+
+    const [balance, setBalance] = useState(0);
+    const [portfolioCoins, setPortfolioCoins] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const { userId } = useContext(AppContext);
+
+    const fetchPortfolio = async () => {
+        setLoading(true);
+        try {
+            const response = await API.graphql(
+                graphqlOperation(
+                    getUserPortfolio,
+                    { id: userId },
+                )
+            )
+            setBalance(response.data.getUser.netWorth);
+            setPortfolioCoins(response.data.getUser.portfolioCoins.items);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPortfolio();
+    }, [])
+
     return (
         <View style={styles.container}>
             <Image
@@ -82,7 +47,7 @@ const PortfolioScreen = () => {
             />
             <View style={styles.balancedContainer}>
                 <Text style={styles.label}>Portfolio Balance</Text>
-                <Text style={styles.balance}>$69.200</Text>
+                <Text style={styles.balance}>${balance}</Text>
             </View>
 
             <FlatList
@@ -91,6 +56,8 @@ const PortfolioScreen = () => {
                 renderItem={({ item }) =>
                     <PortfolioCoin portfolioCoin={item} />
                 }
+                onRefresh={fetchPortfolio}
+                refreshing={loading}
                 showsVerticalScrollIndicator={false}
             />
 
