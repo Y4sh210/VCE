@@ -6,6 +6,7 @@ import ProfileScreen from '../ProfileScreen/profileScreen';
 import { API, graphqlOperation } from 'aws-amplify';
 import { getUserPortfolio } from './queries';
 import AppContext from '../../src/utils/AppContext';
+import NumberFormat from 'react-number-format';
 
 const image = require('../../assets/images/Saly-10.png');
 
@@ -48,6 +49,7 @@ const PortfolioScreen = () => {
             <View style={styles.balancedContainer}>
                 <Text style={styles.label}>Portfolio Balance</Text>
                 <Text style={styles.balance}>${balance}</Text>
+                
             </View>
 
             <FlatList

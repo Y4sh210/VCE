@@ -42,8 +42,8 @@ const PortfolioCoin = (props: portfolioCoinProps) => {
                 </View>
             </View>
             <View style={styles.right}>
-                <Text style={styles.value}>${amount * currentPrice}</Text>
-                <Text style={styles.symbol}>{symbol} {amount}</Text>
+                <Text style={styles.value}>${amount * currentPrice.toFixed(3)}</Text>
+                <Text style={styles.symbol}>{symbol} {amount.toFixed(3)}</Text>
             </View>
         </Pressable>
     );
