@@ -1,21 +1,29 @@
 //import liraries
-import Auth from '@aws-amplify/auth';
+import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { getUser } from '../../src/graphql/queries';
 import { useNavigation } from '@react-navigation/core';
 import { CommonActions } from '@react-navigation/native';
-import React, { Component, useState } from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import React, { Component, useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, Pressable, ActivityIndicator } from 'react-native';
+import AppContext from '../../src/utils/AppContext';
 
 const image = require('../../assets/images/Saly-16.png');
 
 // create a component
 const ProfileScreen = () => {
-    const [user, setUser] = useState({
-        id: '1',
-        name: "Yash",
-        email: "yash@gmail.com",
-        image: require('../../assets/images/btc.png'),
-        netWorth: 1234
-    });
+    const [user, setUser] = useState(null);
+    const { userId } = useContext(AppContext);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await API.graphql(graphqlOperation(getUser, { id: userId }));
+                setUser(response.data.getUser);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }, [])
 
     const navigation = useNavigation();
     const signout = async () => {
@@ -29,6 +37,11 @@ const ProfileScreen = () => {
             })
         );
     };
+
+    if (!user) {
+        return <ActivityIndicator />
+    }
+
     return (
         <View style={styles.container}>
             <Image style={styles.image} source={image} />
@@ -41,7 +54,7 @@ const ProfileScreen = () => {
                     </View>
                 </View>
                 <View style={styles.right}>
-                    <Text style={styles.value}>${user.netWorth}</Text>
+                    <Text style={styles.value}>${user.networth}</Text>
                 </View>
             </View>
             <Pressable onPress={signout} style={{ marginTop: 'auto' }}>

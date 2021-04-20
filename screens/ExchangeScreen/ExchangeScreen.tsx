@@ -1,22 +1,29 @@
 //import liraries
-import { useRoute } from '@react-navigation/native';
-import React, { Component, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, Pressable, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { Component, useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, Pressable, Alert, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { API, graphqlOperation } from 'aws-amplify';
 import { exchangeCoins } from '../../src/graphql/mutations';
+import AppContext from '../../src/utils/AppContext';
+import { listPortfolioCoins } from '../../src/graphql/queries';
 
 
 
 const image = require('../../assets/images/Saly-31.png');
 
+const USD_COIN_ID = '05944a8c-c272-4338-93d1-f5239b5b8457';
+
 // create a component
 const ExchangeScreen = () => {
     const [coinAmount, setCoinAmount] = useState('');
     const [coinUSDAmount, setCoinUSDAmount] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const navigation = useNavigation();
 
     const maxUSD = 100000;
-
+    const { userId } = useContext(AppContext);
 
     const route = useRoute();
 
@@ -46,20 +53,62 @@ const ExchangeScreen = () => {
         setCoinAmount((amount / coin.currentPrice).toString());
     }, [coinUSDAmount]);
 
-    const placeOrder = async () => {
+    const getPortfolioCoinId = async (coinId: string) => {
         try {
             const response = await API.graphql(
-                graphqlOperation(
-                    exchangeCoins, {
-                    coinId: coin.id,
-                    isBuy,
-                    amount: parseFloat(coinAmount)
-                }
+                graphqlOperation(listPortfolioCoins,
+                    {
+                        filter: {
+                            and: {
+                                coinId: { eq: coinId },
+                                userId: { eq: userId }
+                            }
+                        }
+                    }
                 )
             )
+            if (response.data.listPortfolioCoins.items.length > 0) {
+                return (response.data.listPortfolioCoins.items[0].id);
+            } else {
+                return null;
+            }
         } catch (e) {
             console.log(e);
+            return null;
         }
+    }
+
+
+    const placeOrder = async () => {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        try {
+            const variables =
+            {
+                coinId: coin.id,
+                isBuy,
+                amount: parseFloat(coinAmount),
+                usdPortfolioCoinId: await getPortfolioCoinId(USD_COIN_ID),
+                coinPortfolioCoinId: await getPortfolioCoinId(coin.id)
+            }
+
+            const response = await API.graphql(
+                graphqlOperation(
+                    exchangeCoins, variables
+                )
+            )
+            if (response.data.exchangeCoins) {
+                navigation.navigate('Portfolio');
+            } else {
+                Alert.alert('Error', 'There was an error exchanging coins');
+            }
+        } catch (e) {
+            Alert.alert('Error', 'There was an error exchanging coins');
+            console.log(e);
+        }
+        setIsLoading(false);
     }
 
     const onPlaceOrder = () => {
@@ -71,7 +120,7 @@ const ExchangeScreen = () => {
             Alert.alert('Error', `Not enough ${coin.symbol} coins. Max: ${coin.amount || 0}`)
         }
 
-        onPlaceOrder();
+        await placeOrder();
     };
 
     return (
@@ -120,6 +169,7 @@ const ExchangeScreen = () => {
                 </View>
             </View>
             <Pressable style={styles.button} onPress={onPlaceOrder}>
+                {isLoading && <ActivityIndicator color={'white'} />}
                 <Text style={styles.buttonText}>Place Order</Text>
             </Pressable>
         </View>
@@ -171,7 +221,8 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 50
+        borderRadius: 50,
+        flexDirection: 'row'
     },
     buttonText: {
         color: '#eeebdd',
