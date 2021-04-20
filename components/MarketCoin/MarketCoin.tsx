@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export interface portfolioCoinProps {
     marketCoin: {
+        id: string,
         image: string,
         name: string,
         symbol: string,
@@ -18,6 +19,7 @@ export interface portfolioCoinProps {
 const MarketCoin = (props: portfolioCoinProps) => {
     const {
         marketCoin: {
+            id,
             image,
             name,
             symbol,
@@ -29,7 +31,7 @@ const MarketCoin = (props: portfolioCoinProps) => {
     const navigation = useNavigation();
 
     return (
-        <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails')}>
+        <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails', { id })}>
             <View style={styles.left}>
                 <Image style={styles.image} source={require('../../assets/images/btc.png')} />
                 <View>

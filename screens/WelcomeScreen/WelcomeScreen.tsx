@@ -1,9 +1,10 @@
 //import liraries
-import React, { Component, useEffect } from 'react';
+import React, { Component, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { Auth, Hub } from 'aws-amplify';
 import { CommonActions, useNavigation } from '@react-navigation/core';
 import { parseSync } from '@babel/core';
+import AppContext from '../../src/utils/AppContext';
 
 const image = require('../../assets/images/Saly-1.png');
 const googleButtonImg = require('../../assets/images/google-sign-in.png');
@@ -12,11 +13,13 @@ const googleButtonImg = require('../../assets/images/google-sign-in.png');
 const WelcomeScreen = () => {
 
     const navigation = useNavigation();
+    const { setUserId } = useContext(AppContext);
 
     useEffect(() => {
         const fetchUser = async () => {
             const user = await Auth.currentAuthenticatedUser();
             if (user) {
+                setUserId(user.attributes.sub);
                 navigation.dispatch(
                     CommonActions.reset({
                         index: 0,
@@ -34,6 +37,7 @@ const WelcomeScreen = () => {
     useEffect(() => {
         Hub.listen("auth", ({ payload: { event, data } }) => {
             if (event === "signIn") {
+                setUserId(data.signInUserSession.accessToken.payload.sub);
                 navigation.dispatch(
                     CommonActions.reset({
                         index: 0,

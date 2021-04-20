@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 
 export interface portfolioCoinProps {
     portfolioCoin: {
+        id: string,
         image: string,
         name: string,
         symbol: string,
@@ -17,6 +18,7 @@ export interface portfolioCoinProps {
 const PortfolioCoin = (props: portfolioCoinProps) => {
     const {
         portfolioCoin: {
+            id,
             image,
             name,
             symbol,
@@ -27,7 +29,7 @@ const PortfolioCoin = (props: portfolioCoinProps) => {
 
     const navigation = useNavigation();
     return (
-        <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails')}>
+        <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails', { id })}>
             <View style={styles.left}>
                 <Image style={styles.image} source={require('../../assets/images/btc.png')} />
                 <View>

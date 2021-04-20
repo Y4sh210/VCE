@@ -21,6 +21,10 @@
         "vce72d134dfPostConfirmation": {
           "deploymentBucketName": "amplify-vce-dev-130555-deployment",
           "s3Key": "amplify-builds/vce72d134dfPostConfirmation-7a6c33366758774f397a-build.zip"
+        },
+        "ExchangeCoins": {
+          "deploymentBucketName": "amplify-vce-dev-130555-deployment",
+          "s3Key": "amplify-builds/ExchangeCoins-4438362f36445a573762-build.zip"
         }
       }
     }

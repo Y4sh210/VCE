@@ -3,6 +3,8 @@ import { useRoute } from '@react-navigation/native';
 import React, { Component, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { API, graphqlOperation } from 'aws-amplify';
+import { exchangeCoins } from '../../src/graphql/mutations';
 
 
 
@@ -19,7 +21,8 @@ const ExchangeScreen = () => {
     const route = useRoute();
 
     const isBuy = route?.params?.isBuy;
-    const coinData = route?.params?.coinData;
+    const coin = route?.params?.coin;
+    const portfolioCoin = route?.params?.portfolioCoin;
 
     useEffect(() => {
         const amount = parseFloat(coinAmount);
@@ -29,7 +32,7 @@ const ExchangeScreen = () => {
             return;
         }
         // setCoinAmount(amount.toString());
-        setCoinUSDAmount((amount * coinData.currentPrice).toString());
+        setCoinUSDAmount((amount * coin.currentPrice).toString());
     }, [coinAmount]);
 
     useEffect(() => {
@@ -40,17 +43,35 @@ const ExchangeScreen = () => {
             return;
         }
         setCoinAmount(amount.toString());
-        setCoinAmount((amount / coinData.currentPrice).toString());
+        setCoinAmount((amount / coin.currentPrice).toString());
     }, [coinUSDAmount]);
+
+    const placeOrder = async () => {
+        try {
+            const response = await API.graphql(
+                graphqlOperation(
+                    exchangeCoins, {
+                    coinId: coin.id,
+                    isBuy,
+                    amount: parseFloat(coinAmount)
+                }
+                )
+            )
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const onPlaceOrder = () => {
         if (isBuy && parseFloat(coinUSDAmount) > maxUSD) {
             Alert.alert('Error', `Not enough USD coins. Max: ${maxUSD}`);
             return;
         }
-        if (!isBuy && parseFloat(coinAmount) > coinData.amount) {
-            Alert.alert('Error', `Not enough ${coinData.symbol} coins. Max: ${coinData.amount}`)
+        if (!isBuy && (!portfolioCoin || parseFloat(coinAmount) > portfolioCoin.amount)) {
+            Alert.alert('Error', `Not enough ${coin.symbol} coins. Max: ${coin.amount || 0}`)
         }
+
+        onPlaceOrder();
     };
 
     return (
@@ -60,12 +81,12 @@ const ExchangeScreen = () => {
         >
             <Text style={styles.title}>
                 {isBuy ? 'Buy ' : 'Sell '}
-                {coinData?.name}
+                {coin?.name}
             </Text>
             <Text style={styles.subtitle}>
-                1 {coinData?.symbol}
+                1 {coin?.symbol}
                 {' = '}
-                ${coinData?.currentPrice}
+                ${coin?.currentPrice}
             </Text>
             <Image style={styles.image} source={image} />
             <View style={styles.inputsContainer}>
@@ -79,7 +100,7 @@ const ExchangeScreen = () => {
                     />
                     <Text
                         style={{ color: '#eeebdd', marginLeft: 5 }}>
-                        {coinData?.symbol}
+                        {coin?.symbol}
                     </Text>
                 </View>
                 <Text style={{ color: '#eeebdd', fontSize: 30 }}>=</Text>

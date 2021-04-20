@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "api": {
+      "vce": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

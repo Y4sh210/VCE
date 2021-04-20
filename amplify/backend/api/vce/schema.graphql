@@ -34,3 +34,12 @@ type Coin @model(mutations: null){
   priceHistoryString: String
 }
 
+type Mutation{
+  exchangeCoins(
+    coinId: ID!, 
+    isBuy: Boolean!, 
+    amount: Float!,
+    usdPortfolioCoinId: ID,
+    coinPortfolioCoinId: ID
+    ): Boolean! @function(name: "ExchangeCoins-${env}")
+}

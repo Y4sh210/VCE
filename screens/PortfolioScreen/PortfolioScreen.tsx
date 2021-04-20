@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
 import PortfolioCoin from '../../components/PortfolioCoin/PortfolioCoin';
 import ProfileScreen from '../ProfileScreen/profileScreen';
+import {API, graphqlOperation} from 'aws-amplify';
+import {} from '../../src/graphql/queries'
 
 const image = require('../../assets/images/Saly-10.png');
 
