@@ -12,7 +12,7 @@ export const getUserPortfolio = /* GraphQL */ `
               name
               symbol
               image
-              currentPriceF
+              currentPrice
           }
         }
         nextToken

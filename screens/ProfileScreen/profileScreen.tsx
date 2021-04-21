@@ -1,5 +1,5 @@
 //import liraries
-import { Auth, API, graphqlOperation } from 'aws-amplify';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../../src/graphql/queries';
 import { useNavigation } from '@react-navigation/core';
 import { CommonActions } from '@react-navigation/native';
@@ -11,7 +11,7 @@ const image = require('../../assets/images/Saly-16.png');
 
 // create a component
 const ProfileScreen = () => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState([]);
     const { userId } = useContext(AppContext);
 
     useEffect(() => {
@@ -19,13 +19,16 @@ const ProfileScreen = () => {
             try {
                 const response = await API.graphql(graphqlOperation(getUser, { id: userId }));
                 setUser(response.data.getUser);
+
             } catch (e) {
                 console.log(e);
             }
         }
+        fetchUser();
     }, [])
 
     const navigation = useNavigation();
+
     const signout = async () => {
         await Auth.signOut();
         navigation.dispatch(
@@ -39,7 +42,7 @@ const ProfileScreen = () => {
     };
 
     if (!user) {
-        return <ActivityIndicator />
+        return (<ActivityIndicator color="white" />)
     }
 
     return (
@@ -47,7 +50,7 @@ const ProfileScreen = () => {
             <Image style={styles.image} source={image} />
             <View style={styles.userContainer}>
                 <View style={styles.left}>
-                    <Image style={styles.userImage} source={require('../../assets/images/btc.png')} />
+                    <Image style={styles.userImage} source={{ uri: user.image }} />
                     <View>
                         <Text style={styles.name}>{user.name}</Text>
                         <Text style={styles.email}>{user.email}</Text>

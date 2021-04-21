@@ -70,7 +70,7 @@ const CoinDetailsScreen = () => {
     };
 
     const onSell = () => {
-        navigation.navigate('CoinExchange', { isBuy: false, portfolioCoin });
+        navigation.navigate('CoinExchange', { isBuy: false, coin, portfolioCoin });
     };
 
     if (!coin) {
@@ -81,7 +81,7 @@ const CoinDetailsScreen = () => {
         <View style={styles.container}>
             <View style={styles.topContainer}>
                 <View style={styles.left}>
-                    <Image style={styles.image} source={require('../../assets/images/btc.png')} />
+                    <Image style={styles.image} source={{ uri: coin.image }} />
                     <View>
                         <Text style={styles.name}>{coin.name}</Text>
                         <Text style={styles.symbol}>{coin.symbol}</Text>
@@ -104,12 +104,12 @@ const CoinDetailsScreen = () => {
 
                     <View style={styles.valueContainer}>
                         <Text style={styles.label}>1 day</Text>
-                        <PercentageChange value={coin.valueChange1D.toFixed(3)} />
+                        <PercentageChange value={coin.valueChange1H.toFixed(3)} />
                     </View>
 
                     <View style={styles.valueContainer}>
                         <Text style={styles.label}>7 days</Text>
-                        <PercentageChange value={coin.valueChange7D.toFixed(3)} />
+                        <PercentageChange value={coin.valueChange7H.toFixed(3)} />
                     </View>
                 </View>
             </View>
@@ -123,7 +123,7 @@ const CoinDetailsScreen = () => {
                 <Text style={{ color: '#eeebdd', marginVertical: 10 }}>
                     {coin.symbol} {portfolioCoin?.amount?.toFixed(3) || 0}
                     {' '}
-                    ($ {coin.currentPrice * portfolioCoin?.amount?.toFixed(3) || 0})
+                    ($ {(coin.currentPrice * portfolioCoin?.amount).toFixed(3) || 0})
                 </Text>
             </View>
             <View style={[styles.row, { marginTop: 'auto' }]}>

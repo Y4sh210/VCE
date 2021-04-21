@@ -11,6 +11,9 @@ interface CoinPriceGraphProps {
 const CoinPriceGraph = ({ dataString }: CoinPriceGraphProps) => {
 
     const data = JSON.parse(dataString);
+    console.log("--------------------------------------------");
+    console.log(data);
+    console.log("--------------------------------------------")
 
     return (
         <View style={styles.container}>
@@ -26,7 +29,7 @@ const CoinPriceGraph = ({ dataString }: CoinPriceGraphProps) => {
                 width={Dimensions.get("window").width - 30} // from react-native??
                 height={220}
                 yAxisLabel="$"
-                yAxisSuffix="K "
+                yAxisSuffix=" "
                 withOuterLines={false}
                 withInnerLines={false}
                 yAxisInterval={1} // optional, defaults to 1

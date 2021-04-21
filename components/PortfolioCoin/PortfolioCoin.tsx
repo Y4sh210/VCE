@@ -35,14 +35,14 @@ const PortfolioCoin = (props: portfolioCoinProps) => {
     return (
         <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails', { id })}>
             <View style={styles.left}>
-                <Image style={styles.image} source={require('../../assets/images/btc.png')} />
+                <Image style={styles.image} source={{ uri: image }} />
                 <View>
                     <Text style={styles.name}>{name}</Text>
                     <Text style={styles.symbol}>{symbol}</Text>
                 </View>
             </View>
             <View style={styles.right}>
-                <Text style={styles.value}>${amount * currentPrice.toFixed(3)}</Text>
+                <Text style={styles.value}>${(amount * currentPrice).toFixed(3)}</Text>
                 <Text style={styles.symbol}>{symbol} {amount.toFixed(3)}</Text>
             </View>
         </Pressable>

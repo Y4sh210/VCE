@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import PercentageChange from '../PercentageChange';
 import { useNavigation } from '@react-navigation/native';
 
-export interface portfolioCoinProps {
+export interface marketCoinProps {
     marketCoin: {
         id: string,
         image: string,
@@ -12,11 +12,17 @@ export interface portfolioCoinProps {
         symbol: string,
         valueChange24H: number,
         currentPrice: number,
+        cgId: string,
+        valueChange1H: number,
+        valueChange7H: number,
+        priceHistoryString: string,
+        createdAt: string,
+        updatedAt: string,
     }
 }
 
 // create a component
-const MarketCoin = (props: portfolioCoinProps) => {
+const MarketCoin = (props: marketCoinProps) => {
     const {
         marketCoin: {
             id,
@@ -25,6 +31,12 @@ const MarketCoin = (props: portfolioCoinProps) => {
             symbol,
             valueChange24H,
             currentPrice,
+            cgId,
+            valueChange1H,
+            valueChange7H,
+            priceHistoryString,
+            createdAt,
+            updatedAt,
         },
     } = props;
 
@@ -33,7 +45,7 @@ const MarketCoin = (props: portfolioCoinProps) => {
     return (
         <Pressable style={styles.container} onPress={() => navigation.navigate('CoinDetails', { id })}>
             <View style={styles.left}>
-                <Image style={styles.image} source={require('../../assets/images/btc.png')} />
+                <Image style={styles.image} source={{ uri: image }} />
                 <View>
                     <Text style={styles.name}>{name}</Text>
                     <Text style={styles.symbol}>{symbol}</Text>

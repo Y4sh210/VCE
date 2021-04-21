@@ -28,6 +28,8 @@ const getCoinAmount = async (coinPortfolioCoinId, userId) => {
         TableName: process.env.PORTFOLIO_COIN_TABLE
     }
     const coinData = await ddb.getItem(params).promise();
+    console.log('Portfolio Coin Data');
+    console.log(coinData);
     if (coinData && coinData.Item && coinData.Item.amount && coinData.Item.amount.N) {
         return parseFloat(coinData.Item.amount.N);
     }
@@ -44,6 +46,8 @@ const getUsdAmount = async (usdPortfolioCoinId, userId) => {
         TableName: process.env.PORTFOLIO_COIN_TABLE
     }
     const coinData = await ddb.getItem(params).promise();
+    console.log('USD Coin Data');
+    console.log(coinData);
     if (coinData && coinData.Item && coinData.Item.amount && coinData.Item.amount.N) {
         return parseFloat(coinData.Item.amount.N);
     }
@@ -58,18 +62,27 @@ const getCoin = async (coinId) => {
         TableName: process.env.COIN_TABLE
     }
     const coinData = await ddb.getItem(params).promise();
+    console.log('Coin Data');
+    console.log(coinData);
     return coinData;
 }
 
 const canBuyCoin = (coin, amountToBuy, usdAmount) => {
-    return usdAmount >= parseFloat(coin.Item.currentPrice.N) * amountToBuy;
+    console.log("canBUYYYY");
+    console.log(usdAmount);
+    console.log(coin.Item.currentPrice.N);
+    console.log(amountToBuy);
+    return usdAmount >= (parseFloat(coin.Item.currentPrice.N) * amountToBuy);
 }
 
-const canSellCoin = (coin, amountToSell, portfolioAmount) => {
+const canSellCoin = (amountToSell, portfolioAmount) => {
+    console.log("canSELLLL");
+    console.log(portfolioAmount);
+    console.log(amountToSell);
     return portfolioAmount >= amountToSell
 }
 
-const buyCoin = async (coin, amountToBuy, usdPortfolioCoinId, userId, coinAmount) => {
+const buyCoin = async (coin, amountToBuy, usdPortfolioCoinId, usdAmount, coinAmount, userId) => {
     // decrease USD
     const date = new Date();
     const newUsdAmount = usdAmount - parseFloat(coin.Item.currentPrice.N) * amountToBuy;
@@ -88,7 +101,6 @@ const buyCoin = async (coin, amountToBuy, usdPortfolioCoinId, userId, coinAmount
     await ddb.putItem(params).promise();
 
     // Add new portfolio coin or update the same
-    const date = new Date();
     const newCoinAmount = coinAmount + amountToBuy;
     const params1 = {
         Item: {
@@ -98,17 +110,17 @@ const buyCoin = async (coin, amountToBuy, usdPortfolioCoinId, userId, coinAmount
             'updatedAt': { S: date.toISOString() },
             'userId': { S: userId },
             'coinId': { S: coin.Item.id.S },
-            'amount': { N: newUsdAmount.toString() }
+            'amount': { N: newCoinAmount.toString() }
         },
         TableName: process.env.PORTFOLIO_COIN_TABLE
     }
     await ddb.putItem(params1).promise();
 }
 
-const sellCoin = async (coin, amountToSell, usdPortfolioCoinId, userId, coinAmount) => {
+const sellCoin = async (coin, amountToSell, usdPortfolioCoinId, usdAmount, coinAmount, userId) => {
     // increase USD
     const date = new Date();
-    const newUsdAmount = usdAmount + parseFloat(coin.Item.currentPrice.N) * amountToSell;
+    const newUsdAmount = usdAmount + (parseFloat(coin.Item.currentPrice.N) * amountToSell);
     const params = {
         Item: {
             id: { S: usdPortfolioCoinId },
@@ -124,7 +136,6 @@ const sellCoin = async (coin, amountToSell, usdPortfolioCoinId, userId, coinAmou
     await ddb.putItem(params).promise();
 
     // Add new portfolio coin or update the same
-    const date = new Date();
     const newCoinAmount = coinAmount - amountToSell;
     const params1 = {
         Item: {
@@ -134,7 +145,7 @@ const sellCoin = async (coin, amountToSell, usdPortfolioCoinId, userId, coinAmou
             'updatedAt': { S: date.toISOString() },
             'userId': { S: userId },
             'coinId': { S: coin.Item.id.S },
-            'amount': { N: newUsdAmount.toString() }
+            'amount': { N: newCoinAmount.toString() }
         },
         TableName: process.env.PORTFOLIO_COIN_TABLE
     }
@@ -147,6 +158,8 @@ const sellCoin = async (coin, amountToSell, usdPortfolioCoinId, userId, coinAmou
 const resolvers = {
     Mutation: {
         exchangeCoins: async ctx => {
+            console.log("CTX");
+            console.log(ctx);
             // var params = {
             //     UserPoolId: COGNITO_USERPOOL_ID, /* required */
             //     Username: ctx.identity.claims[COGNITO_USERNAME_CLAIM_KEY], /* required */
@@ -160,6 +173,9 @@ const resolvers = {
 
             const { coinId, isBuy, amount, usdPortfolioCoinId, coinPortfolioCoinId } = ctx.arguments;
             const userId = ctx.identity.sub;
+            console.log(ctx.arguments.usdPortfolioCoinId);
+            console.log(ctx.arguments.coinPortfolioCoinId);
+            console.log(coinId)
 
             const usdAmount = !usdPortfolioCoinId ? 0 : await getUsdAmount(usdPortfolioCoinId, userId);
 
@@ -167,12 +183,15 @@ const resolvers = {
 
             const coin = await getCoin(coinId);
 
+
             try {
 
                 if (isBuy && canBuyCoin(coin, amount, usdAmount)) {
+                    console.log("Buy");
                     await buyCoin(coin, amount, usdPortfolioCoinId, usdAmount, coinAmount, userId);
                 }
                 else if (!isBuy && canSellCoin(amount, coinAmount)) {
+                    console.log("Sell");
                     await sellCoin(coin, amount, usdPortfolioCoinId, usdAmount, coinAmount, userId);
                 } else {
                     throw new Error(isBuy ? 'Not enougn USD' : 'Not enoughcoins to sell');

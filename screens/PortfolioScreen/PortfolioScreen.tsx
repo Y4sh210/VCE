@@ -27,14 +27,25 @@ const PortfolioScreen = () => {
                     { id: userId },
                 )
             )
-            setBalance(response.data.getUser.netWorth);
+            // setBalance(response.data.getUser.networth);
             setPortfolioCoins(response.data.getUser.portfolioCoins.items);
+            updateBalance();
         } catch (e) {
             console.log(e);
         } finally {
             setLoading(false);
         }
+
     };
+
+    const updateBalance = () => {
+        let netBalance = 0;
+        portfolioCoins.forEach(coin => {
+            let amt = (coin.amount * coin.coin.currentPrice);
+            netBalance = netBalance + amt;
+        })
+        setBalance(netBalance.toFixed(3));
+    }
 
     useEffect(() => {
         fetchPortfolio();
@@ -49,7 +60,7 @@ const PortfolioScreen = () => {
             <View style={styles.balancedContainer}>
                 <Text style={styles.label}>Portfolio Balance</Text>
                 <Text style={styles.balance}>${balance}</Text>
-                
+
             </View>
 
             <FlatList

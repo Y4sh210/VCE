@@ -6,7 +6,7 @@ export interface UserRankingItemProps {
     user: {
         image: string,
         name: string,
-        netWorth: number,
+        networth: number,
     },
     place: number,
 }
@@ -17,7 +17,7 @@ const UserRankingItem = (props: UserRankingItemProps) => {
         user: {
             image,
             name,
-            netWorth
+            networth
         },
         place
     } = props;
@@ -25,13 +25,13 @@ const UserRankingItem = (props: UserRankingItemProps) => {
         <View style={styles.container}>
             <View style={styles.left}>
                 <Text style={styles.place}>{place}</Text>
-                <Image style={styles.image} source={require('../../assets/images/btc.png')} />
+                <Image style={styles.image} source={{ uri: image }} />
                 <View>
                     <Text style={styles.name}>{name}</Text>
                 </View>
             </View>
             <View style={styles.right}>
-                <Text style={styles.value}>${netWorth}</Text>
+                <Text style={styles.value}>${networth}</Text>
             </View>
         </View>
     );

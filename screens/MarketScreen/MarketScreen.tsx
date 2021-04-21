@@ -18,6 +18,7 @@ const MarketScreen = () => {
         setLoading(true);
         try {
             const response = await API.graphql(graphqlOperation(listCoins));
+            console.log(response);
             setCoins(response.data.listCoins.items);
         } catch (e) {
             console.log(e);
@@ -28,7 +29,7 @@ const MarketScreen = () => {
 
     useEffect(() => {
         fetchCoins();
-    }, [])
+    }, []);
 
     return (
         <View style={styles.container}>

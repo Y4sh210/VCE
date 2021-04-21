@@ -1,30 +1,41 @@
 //import liraries
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
 import UserRankingItem from '../../components/UserRankingItem/UserRankingItem';
+import { API, graphqlOperation } from 'aws-amplify';
+import { listUsers } from '../../src/graphql/queries';
 
 const image = require('../../assets/images/Saly-20.png');
 
-const portfolioCoins = [{
-    id: '1',
-    name: 'Virtual Dollars',
-    image: require('../../assets/images/btc.png'),
-    netWorth: 70.20
-},
-{
-    id: '2',
-    name: 'Virtual Dollars',
-    image: require('../../assets/images/btc.png'),
-    netWorth: 70.20
-},
-{
-    id: '3',
-    name: 'Virtual Dollars',
-    image: require('../../assets/images/btc.png'),
-    netWorth: 70.20
-}]
+// const portfolioCoins = [{
+//     id: '1',
+//     name: 'Yash Chauhan',
+//     image: require('../../assets/images/btc.png'),
+//     netWorth: 100000.000
+// }]
 // create a component
 const RankingScreen = () => {
+
+    const [userList, setUserList] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const fetchUserList = async () => {
+        setLoading(true);
+        try {
+            const response = await API.graphql(graphqlOperation(listUsers));
+            console.log(response);
+            setUserList(response.data.listUsers.items);
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchUserList();
+    }, []);
+
     return (
         <View style={styles.container}>
             <Image
@@ -34,7 +45,9 @@ const RankingScreen = () => {
             <Text style={styles.label}>Rankings</Text>
             <FlatList
                 style={{ width: '100%' }}
-                data={portfolioCoins}
+                data={userList}
+                onRefresh={fetchUserList}
+                refreshing={loading}
                 renderItem={({ item, index }) =>
                     <UserRankingItem user={item} place={index + 1} />
                 }
